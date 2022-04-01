@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+ <html>
+  <head>
+    <style>
+      * {
+        font-family: monospace;
+      }
+
+      .container {
+        width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .page {
+        page-break-inside: avoid;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .qrcode-container {
+        display: inline-block;
+        text-align: center;
+        padding: 5px;
+        border: 2px solid darkgray;
+        border-radius: 5px;
+        margin: 10px;
+      }
+
+      .form-control {
+        display: block;
+        width: 100%;
+        font-family: monospace;
+      }
+
+      .mb {
+        margin-bottom: 10px;
+      }
+
+      .fixed {
+        resize: none;
+      }
+
+      .table {
+        width: 100%;
+      }
+
+      .table tr td {
+        vertical-align: top;
+      }
+
+      .btn-container {
+        text-align: center;
+        margin: 10px;
+        border-radius: 5px;
+      }
+
+      .form-control {
+        width: 300px;
+        padding: 5px 10px;
+        border: 2px solid darkgray;
+        border-radius: 5px;
+        outline: none;
+        line-height: 1.6;
+      }
+
+      .btn {
+        background: white;
+        border: 2px solid darkgray;
+        line-height: 2em;
+        border-radius: 5px;
+        outline: none;
+        box-shadow: 2px 2px 0px darkgray;
+      } 
+      .btn:hover {
+        background: #f3f3f3;
+      }
+      .btn:active {
+        box-shadow: 0px 0px 0px darkgray;
+      }
+      .url-container {
+        display: inline-block;
+        width: 300px;
+        overflow: auto;
+        word-wrap: break-word;
+        margin: 10px;
+        padding: 5px;
+        border: 2px solid darkgray;
+        font-family: monospace;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      @media print {
+        .no-print, .no-print * {
+          display: none !important;
+        }
+      }
+    </style>
+    <title>AfterOp QR Generator (TEST)</title>
+  </head>
+  <body>
+    <div id='app'>
+
+      <div class='container'>
+        <table class="table">
+          <td>
+            <div class="no-print">
+              <div class="mb">
+                <label>Host Address</label>
+                <input type="text" v-model='host' placeholder="Host" class="form-control" disabled>
+              </div>
+              <div class="mb">
+                <label for="">Organization Code</label>
+                <input type="text" v-model='orgCode' placeholder="Organization Code" class="form-control" disabled>
+                    
+                </input>
+              </div>
+           
+              <div class="mb">
+                <label for="">Surgeon</label>
+                <select type="text" v-model='surgeon' placeholder="Surgeon" class="form-control">
+                	<option v-for="doctor in doctors.surgeon" v-bind:value="doctor.id">{{doctor.fullname}}</option>
+                  <option value="00">N/A</option>
+                </select>
+              </div>
+            
+              <div class="mb">
+                <label for="">Anesthesiologist</label>
+                <select type="text" v-model='anesthesiologist' placeholder="Anesthesiologist" class="form-control">
+                    <option v-for="doctor in doctors.anesthesiologist" v-bind:value="doctor.id">{{doctor.fullname}}</option>
+                    <option value="00">N/A</option>
+                </select>
+              </div>
+              
+            
+              <div class="mb">
+                <label for="">Surgical Procedure</label>
+                <select type="text" v-model='surgicalProcedure' placeholder="Surgical Procedure" class="form-control">
+                    <option value="01">SHOULDER ARTHROSCOPY</option>
+                    <option value="02">SHOULDER ARTHROSCOPY W/ ROTOR CUFF REPAIR</option>
+                    <option value="03">ELBOW</option>
+                    <option value="04">HAND/WRIST/DISTAL FOREARM</option>
+                    <option value="05">UPPER EXTREMITY ORDER</option>
+                    <option value="06">KNEE</option>
+                    <option value="07">FOOT/ANKLE</option>
+                    <option value="08">LOWER EXTREMITY OTHER</option>
+                </select>
+              </div>
+
+           
+              <div class="mb">
+                <label for="">Block Type</label>
+                <select type="text" v-model='blockType' placeholder="Block Type" class="form-control">
+                    <option value="01">INTERSCALENE</option>
+                    <option value="02">SUPRACLAVICULAR</option>
+                    <option value="03">INFRACLAVICULAR</option>
+                    <option value="04">AXILLARY</option>
+                    <option value="05">SUBOMOHYOID ANTERIOR SUPRASCAPULAR</option>
+                    <option value="06">POSTERIOR SUPRASCAPULAR</option>
+                    <option value="07">CIRCUMFLEX AXILLARY</option>
+                    <option value="08">FEMORAL</option>
+                    <option value="09">SUBLUTEAL SCIATIC</option>
+                    <option value="10">POPLITEAL</option>
+                    <option value="11">SAPHENOUS</option>
+                    <option value="12">ADDUCTOR CANAL</option>
+                    <option value="13">ANKLE BLOCK</option>
+                    <option value="14">FASCIA ILIACA</option>
+                    <option value="15">ERECTOR SPINAE PLANE BLOCK</option>
+                    <option value="16">PARAVERTEBRAL</option>
+                    <option value="17">IPACK</option>
+                    <option value="18">GENICULAR</option>
+                    <option value="19">PENG</option>
+                    <option value="20">PECS</option>
+                    <option value="21">QUADRATUS LUMBORUM</option>
+                    <option value="22">OTHER</option>
+                </select>
+              </div>
+
+             
+              <div class="mb">
+                <label for="">Local Anesthetic Technique</label>
+                <select type="text" v-model='technique' placeholder="Local Anesthetic Technique" class="form-control">
+                    <option value="01">SINGLE INJECTION PLAIN</option>
+                    <option value="02">CONTINUOUS CATHETER</option>
+                    <option value="03">SINGLE INJECTION WITH LIPOSOMAL BUPIVACAINE</option>
+                    <option value="04">NO BLOCK</option>
+                </select>
+              </div>
+
+              <div class="mb">
+                <label for="">Trauma (Disabled)</label>
+                <select type="text" v-model='trauma' placeholder="Trauma" class="form-control" disabled>
+                    <option value="00" selected>N/A</option>
+                </select>
+              </div>
+
+              <div class="mb">
+                <label for="">Serial Number</label>
+                <input class="form-control fixed" placeholder="Serial Numbers" v-model='snList' disabled></input>
+              </div>
+              <div class="mb">
+                <button class="btn" @click='updateLinkList'>Generate</button>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div v-if='orgCode && surgeon && blockType && surgicalProcedure && technique && trauma && anesthesiologist && snList && linkList'>
+              <div class="text-center page" v-for='link in linkList'>
+
+                <div style="font-size: 2em;font-family: monospace;">After-Op</div>
+                <qr-code :value='link'></qr-code>
+                <div style='font-family: monospace;'>from InfuLytics LLC 2020</div>
+                <br>
+                <div id="finalURL" class="url-container no-print">{{ link }}</div> <br />
+                <button class="btn" onclick="window.location.href=getElementById('finalURL').innerHTML">Go To Survey</button>
+              </div>
+            </div>
+          </td>
+        </table>
+      </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.3/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/node-uuid/1.4.8/uuid.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js" integrity="sha512-u9akINsQsAkG9xjc1cnGF4zw5TFDwkxuc9vUp5dltDWYCSmyd0meygbvgXrlc/z7/o4a19Fb5V0OUE58J7dcyw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      
+      // demo server, 10.77.44.104:8080; this is the outside port
+
+        //PRODUCTION SERVER ADDRESS
+       let HOST = 'http://192.168.0.28:8080'
+
+       const API_URL = 'http://192.168.0.28:5000/apinode'
+
+       //QA SERVER ADDRESS
+	     //let HOST = 'https://qa.familyconnectapp.com:48013'
+
+    let ORG = 'TEST_'
+    let SN = Date.now().toString()
+
+    //Preset Disabled Values
+      
+      // dev server, 10.200.42.13:8080(di's server); this is the outside port
+      // let HOST = 'http://146.115.5.138:48013'
+
+      // local server
+      // let HOST = 'http://10.200.42.13:8080'
+
+      Vue.component('qrCode', {
+        template: `<div class='qrcode-container'></div>`,
+        props: ['value'],
+        watch: {
+          value() {
+            this.generateQrCode()
+          }
+        },
+        mounted() {
+          this.generateQrCode()
+        },
+        methods: {
+          generateQrCode () {
+            let typeNumber = 0 // for auto detection
+            let errorCorrectionLevel = 'L'
+            let qr = qrcode(
+              typeNumber,
+              errorCorrectionLevel
+            )
+            qr.addData(this.value)
+            qr.make()
+            this.$el.innerHTML = qr.createImgTag(5, 5)
+          }
+        }
+      })
+
+      new Vue({
+        data () {
+          return {
+            host: HOST,
+            orgCode: ORG,
+            surgeon: null,
+            anesthesiologist: null,
+            surgicalProcedure: null,
+            blockType: null,
+            technique: null,
+            trauma: "00",
+            snList: SN,
+            linkList: null,
+            doctors: null
+          }
+        },
+
+        computed: {
+          serialNumbers () {
+            return this.snList
+              ? this.snList.trim()
+                .split("\n")
+                .filter(sn => sn.trim())
+                .map(sn => sn.trim()) 
+              : []
+          }
+        },
+        mounted() {
+          this.getData()
+        },
+
+        methods: {
+          getData() {
+            axios.get(`${API_URL}/?site=site2`).then(response=>{
+              if(response.status === 200) {
+                this.doctors = response.data
+              }
+              return response.data
+            })
+          },
+
+          updateLinkList() {
+            if (!this.serialNumbers || !this.serialNumbers.length || !this.orgCode || !this.host) {
+              this.linkList = null
+              return
+            }
+
+            
+            this.linkList = this.serialNumbers.map(sn => this.getLink(sn))
+            const fullToken = this.linkList[0].split('=')[1]
+            axios.post(`${API_URL}/save-data`, {token: fullToken}).then(response=>{
+              if(response.status === 200){
+                console.log('all fine')
+              }
+              return response.data
+            })
+          },
+
+          goToLink() {
+          	return document.getElementById('finalURL').toString()
+          },
+
+          getLink (sn) {
+
+            if (!this.orgCode || !sn) return
+            let URL_PART = '/app?token='
+            let token = `fc-oc${this.orgCode}SURG${this.surgeon}ANES${this.anesthesiologist}PROC${this.surgicalProcedure}BLCK${this.blockType}TECH${this.technique}${this.trauma}EXTENDINGCHARACTERLIMITBEYONDONEHUNDREDTEST-sn${sn}-${uuid.v4()}-cf`
+            let URL = this.host + URL_PART + token
+            return URL
+          },
+
+          generateQrCodes() {
+            let snList = this.snList.split("\n")
+
+            let typeNumber = 0 // for auto detection
+            let errorCorrectionLevel = 'L'
+            let qr = qrcode(typeNumber, errorCorrectionLevel)
+            qr.addData(URL)
+            qr.make()
+            document.getElementById('qrcode').innerHTML = qr.createImgTag(5, 5)
+            this.url = URL
+          },
+          print() {
+            window.print()
+          },
+          selectUrl() {
+            let element = document.getElementById('url')
+            if (document.selection) { // IE
+              let range = document.body.createTextRange();
+              range.moveToElementText(element);
+              range.select();
+            } else if (window.getSelection) {
+              let range = document.createRange();
+              range.selectNode(element);
+              window.getSelection().removeAllRanges();
+              window.getSelection().addRange(range);
+            }
+          }
+        }
+      }).$mount('#app')
+    </script>
+  </body>
+</html>
